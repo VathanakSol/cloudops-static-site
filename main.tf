@@ -57,6 +57,20 @@ locals {
     fileset("${path.module}", "pages/**"),
     fileset("${path.module}", "js/**"),
   ]))
+
+  content_type_map = {
+    html = "text/html"
+    css  = "text/css"
+    js   = "application/javascript"
+    png  = "image/png"
+    jpg  = "image/jpeg"
+    jpeg = "image/jpeg"
+    gif  = "image/gif"
+    svg  = "image/svg+xml"
+    ico  = "image/x-icon"
+    json = "application/json"
+    txt  = "text/plain"
+  }
 }
 
 # Upload all site files and make them public
@@ -67,4 +81,10 @@ resource "aws_s3_object" "files" {
   key    = each.value
   source = "${path.module}/${each.value}"
   etag   = filemd5("${path.module}/${each.value}")
+  acl    = "public-read"
+  content_type = lookup(
+    local.content_type_map,
+    lower(try(regex(".*\\.([^.]+)$", each.value)[0], "")),
+    "binary/octet-stream"
+  )
 }
