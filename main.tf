@@ -43,7 +43,6 @@ resource "aws_s3_bucket_policy" "website" {
         Principal = "*"
         Action = [
           "s3:GetObject",
-          "s3:PutObject",
         ]
         Resource = "${aws_s3_bucket.website.arn}/*"
       }
@@ -69,4 +68,5 @@ resource "aws_s3_object" "files" {
   key    = each.value
   source = "${path.module}/${each.value}"
   etag   = filemd5("${path.module}/${each.value}")
+  acl    = "public-read"
 }
