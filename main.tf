@@ -35,11 +35,6 @@ resource "aws_s3_object" "files" {
   for_each = fileset("${path.module}/website", "**/*")
   bucket   = aws_s3_bucket.website.bucket
 
-  block_public_policy     = false
-  block_public_acls       = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-
   key      = each.value
   source   = "${path.module}/website/${each.value}"
   etag     = filemd5("${path.module}/website/${each.value}")
