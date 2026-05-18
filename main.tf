@@ -35,17 +35,13 @@ resource "aws_s3_bucket_public_access_block" "website" {
 resource "aws_s3_bucket_policy" "website" {
   bucket = aws_s3_bucket.website.id
 
-  depends_on = [aws_s3_bucket_public_access_block.website]
-
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Effect = "Allow"
         Principal = "*"
-        Action = [
-          "s3:GetObject",
-        ]
+        Action = "s3:GetObject"
         Resource = "${aws_s3_bucket.website.arn}/*"
       }
     ]
@@ -70,5 +66,4 @@ resource "aws_s3_object" "files" {
   key    = each.value
   source = "${path.module}/${each.value}"
   etag   = filemd5("${path.module}/${each.value}")
-  acl    = "public-read"
 }
