@@ -40,11 +40,22 @@ resource "aws_s3_bucket_policy" "website" {
 }
 
 # Upload files from ./website
+locals {
+  site_files = toset(flatten([
+    fileset("${path.module}", "index.html"),
+    fileset("${path.module}", "assets/**"),
+    fileset("${path.module}", "pages/**"),
+    fileset("${path.module}", "js/**"),
+  ]))
+}
+
+# Upload all site files and make them public
 resource "aws_s3_object" "files" {
-  for_each = fileset("${path.module}/website", "**/*")
+  for_each = { for f in local.site_files : f => f }
   bucket   = aws_s3_bucket.website.bucket
 
-  key      = each.value
-  source   = "${path.module}/website/${each.value}"
-  etag     = filemd5("${path.module}/website/${each.value}")
+  key    = each.value
+  source = "${path.module}/${each.value}"
+  etag   = filemd5("${path.module}/${each.value}")
+  acl    = "public-read"
 }
