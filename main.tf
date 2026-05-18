@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "website" {
-    bucket = "cloudops-static-site-011543303027-ap-southeast-1-an"
+    bucket = "cloudops-static-site-011543303027"
 }
 
 resource "aws_s3_bucket_website_configuration" "website" {
