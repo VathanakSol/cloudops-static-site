@@ -88,3 +88,8 @@ resource "aws_s3_object" "files" {
     "binary/octet-stream"
   )
 }
+
+output "website_endpoint" {
+  value = aws_s3_bucket.website.website_endpoint
+}
+
